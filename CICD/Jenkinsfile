@@ -1,0 +1,47 @@
+pipeline {
+    agent {
+        lable = 'ubuntu'
+    }
+    environment {
+        GIT_REPO_URL = "https://github.com/noor-muradi/SpringPetClinic.git"
+        GIT_BRANCH = main
+        SONAR_SERVER_URL = "https://example.com/sonar"
+        SONAR_TOKEN = credentials('sonarqube')
+        SONAR_PROJECT_KEY = Petclinic
+        DOCKER_USERNMAE = <your_docker_username>
+        IMAGE = petclinic
+    }       
+    stages{
+        stage('Git Checkout')
+            steps{
+                git branch: '${GIT_BRANCH}', url: '${GIT_REPO_URL}'
+            }
+        }
+        stage('GitGuardian Scan'){
+            steps{
+                sh 'ggshield secret scan path . -vry' 
+            }
+        }
+        stage('Build') {
+            steps{
+                sh 'mvn clean install'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps{
+                sh 'mvn sonar:sonar -Dsonar.host.url=${SONAR_SERVER_URL} -Dsonar.token=${SONAR_TOKEN} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.qualitygate.wait=true'
+            }
+        }
+        stage('Build Docker Image') {
+            steps{
+                sh 'docker build -t ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER .'
+                sh 'docker push ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER'
+            }
+        } 
+        stage('Deploy to Kubernetes'){
+            steps{    
+                sh 'kubectl run petclinic --image ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER' 
+            }
+        } 
+    }
+}
