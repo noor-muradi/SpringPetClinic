@@ -3,13 +3,13 @@ pipeline {
         lable = 'ubuntu'
     }
     environment {
-        GIT_REPO_URL = "https://github.com/noor-muradi/SpringPetClinic.git"
-        GIT_BRANCH = main
+        GIT_REPO_URL = "https://github.com/AnjuMeleth/SpringPetClinic.git"
+        GIT_BRANCH = "main"
         SONAR_SERVER_URL = "https://example.com/sonar"
-        SONAR_TOKEN = credentials('sonarqube')
-        SONAR_PROJECT_KEY = Petclinic
-        DOCKER_USERNMAE = <your_docker_username>
-        IMAGE = petclinic
+        SONAR_TOKEN = "credentials('sonarqube')"
+        SONAR_PROJECT_KEY = "Petclinic"
+        DOCKER_USERNMAE = "<your_docker_username>"
+        IMAGE = "petclinic"
     }       
     stages{
         stage('Git Checkout')
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps{
-                sh 'docker build -t ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER .'
+                sh 'docker build -f Docker/Dockerfile -t ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER .'
                 sh 'docker push ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER'
             }
         } 
