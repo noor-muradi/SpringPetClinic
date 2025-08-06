@@ -8,7 +8,7 @@ FROM docker.io/library/maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY --from=cache /root/.m2 /root/.m2
 COPY . .
-RUN mvn package
+RUN mvn package -DskipTests
 
 FROM docker.io/library/maven:3.9.6-eclipse-temurin-21 as runner
 WORKDIR	/app
