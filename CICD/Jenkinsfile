@@ -1,47 +1,46 @@
 pipeline {
-    agent {
-        lable = 'ubuntu'
+    agent any
+
+    options {
+        failFast true
+        ansiColor('xterm')
     }
-    environment {
-        GIT_REPO_URL = "https://github.com/AnjuMeleth/SpringPetClinic.git"
-        GIT_BRANCH = "main"
-        SONAR_SERVER_URL = "https://example.com/sonar"
-        SONAR_TOKEN = "credentials('sonarqube')"
-        SONAR_PROJECT_KEY = "Petclinic"
-        DOCKER_USERNMAE = "<your_docker_username>"
-        IMAGE = "petclinic"
-    }       
-    stages{
-        stage('Git Checkout')
-            steps{
-                git branch: '${GIT_BRANCH}', url: '${GIT_REPO_URL}'
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
         }
-        stage('GitGuardian Scan'){
-            steps{
-                sh 'ggshield secret scan path . -vry' 
+
+        stage('Build & Test') {
+            steps {
+                sh "mvn clean install -Dmaven.test.failure.ignore=false"
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
             }
         }
-        stage('Build') {
-            steps{
-                sh 'mvn clean install'
+    }
+
+    post {
+        success {
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/ci', status: 'SUCCESS',
+                        description: "Build passed", targetUrl: env.BUILD_URL
+                }
             }
         }
-        stage('SonarQube Analysis') {
-            steps{
-                sh 'mvn sonar:sonar -Dsonar.host.url=${SONAR_SERVER_URL} -Dsonar.token=${SONAR_TOKEN} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.qualitygate.wait=true'
+        failure {
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/ci', status: 'FAILURE',
+                        description: "Build failed", targetUrl: env.BUILD_URL
+                }
             }
         }
-        stage('Build Docker Image') {
-            steps{
-                sh 'docker build -f Docker/Dockerfile -t ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER .'
-                sh 'docker push ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER'
-            }
-        } 
-        stage('Deploy to Kubernetes'){
-            steps{    
-                sh 'kubectl run petclinic --image ${DOCKER_USERNMAE}/${IMAGE}:$BUILD_NUMBER' 
-            }
-        } 
     }
 }
