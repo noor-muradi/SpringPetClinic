@@ -12,9 +12,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                ansiColor('xterm') {
-                    sh "mvn clean install -Dmaven.test.failure.ignore=false"
-                }
+                sh "mvn clean install -Dmaven.test.failure.ignore=false"
             }
         }
     }
