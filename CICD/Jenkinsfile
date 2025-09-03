@@ -16,11 +16,6 @@ pipeline {
                     sh "mvn clean install -Dmaven.test.failure.ignore=false"
                 }
             }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
         }
     }
 
