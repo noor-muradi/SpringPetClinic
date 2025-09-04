@@ -11,6 +11,7 @@ spec:
   containers:
   - name: docker
     image: 619580454142.dkr.ecr.us-east-1.amazonaws.com/jenkins-agent-pod:latest
+    imagePullPolicy: Always
     command:
     - cat
     tty: true
