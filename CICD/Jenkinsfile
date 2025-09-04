@@ -22,8 +22,6 @@ pipeline {
             }
             steps {
                 echo "Deploying snapshot build to Dev environment..."
-                // Example: push Docker image or upload to Nexus
-                // sh "./scripts/deploy-dev.sh"
             }
         }
 
@@ -33,8 +31,6 @@ pipeline {
             }
             steps {
                 echo "Deploying release build to Production..."
-                // Example: run Helm/K8s deployment or push to prod server
-                // sh "./scripts/deploy-prod.sh"
             }
         }
     }
@@ -43,16 +39,18 @@ pipeline {
         success {
             script {
                 if (env.CHANGE_ID) {
-                    githubNotify context: 'jenkins/ci', status: 'SUCCESS',
-                        description: "Build passed", targetUrl: env.BUILD_URL
+                    setGitHubPullRequestStatus state: 'SUCCESS',
+                        context: 'jenkins/ci',
+                        message: "Build passed"
                 }
             }
         }
         failure {
             script {
                 if (env.CHANGE_ID) {
-                    githubNotify context: 'jenkins/ci', status: 'FAILURE',
-                        description: "Build failed", targetUrl: env.BUILD_URL
+                    setGitHubPullRequestStatus state: 'FAILURE',
+                        context: 'jenkins/ci',
+                        message: "Build failed"
                 }
             }
         }
