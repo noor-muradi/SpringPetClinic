@@ -45,11 +45,11 @@ spec:
       steps {
         script {
           if (env.BRANCH_NAME == 'dev') {
-            env.ECR_REPO  = "1400475625133.dkr.ecr.us-east-1.amazonaws.com"
+            env.ECR_REPO  = "400475625133.dkr.ecr.us-east-1.amazonaws.com"
             env.DOCKER_TAG = "dev-${env.BUILD_NUMBER}"
             env.IMAGE     = "hello-dev"
           } else if (env.BRANCH_NAME == 'main') {
-            env.ECR_REPO  = "1400475625133.dkr.ecr.us-east-1.amazonaws.com"
+            env.ECR_REPO  = "400475625133.dkr.ecr.us-east-1.amazonaws.com"
             env.DOCKER_TAG = "prod-${env.BUILD_NUMBER}"
             env.IMAGE     = "hello-prod"
           }
