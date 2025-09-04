@@ -39,18 +39,16 @@ pipeline {
         success {
             script {
                 if (env.CHANGE_ID) {
-                    setGitHubPullRequestStatus state: 'SUCCESS',
-                        context: 'jenkins/ci',
-                        message: "Build passed"
+                    githubNotify context: 'jenkins/ci', status: 'SUCCESS',
+                        description: "Build passed", targetUrl: env.BUILD_URL
                 }
             }
         }
         failure {
             script {
                 if (env.CHANGE_ID) {
-                    setGitHubPullRequestStatus state: 'FAILURE',
-                        context: 'jenkins/ci',
-                        message: "Build failed"
+                    githubNotify context: 'jenkins/ci', status: 'FAILURE',
+                        description: "Build failed", targetUrl: env.BUILD_URL
                 }
             }
         }
