@@ -49,16 +49,18 @@ spec:
 
     stage('Checkout') {
       steps {
-        checkout scm
+        container('docker'){
+           checkout scm
+        }
       }
     }
-
     stage('Maven Build & Test') {
       steps {
-        sh "mvn clean install -Dmaven.test.skip=true"
+        container('docker'){
+           sh "mvn clean install -Dmaven.test.skip=true"
+        }
       }
     }
-
     stage('Build Container Image') {
       when {
         anyOf {
