@@ -29,7 +29,7 @@ pipeline {
 
         stage('Deploy to Prod') {
             when {
-                branch 'prod'
+                branch 'main'
             }
             steps {
                 echo "Deploying release build to Production..."
