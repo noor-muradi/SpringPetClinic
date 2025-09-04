@@ -15,28 +15,44 @@ pipeline {
                 sh "mvn clean install -Dmaven.test.failure.ignore=false"
             }
         }
+
+        stage('Deploy to Dev') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                echo "Deploying snapshot build to Dev environment..."
+                // Example: push Docker image or upload to Nexus
+                // sh "./scripts/deploy-dev.sh"
+            }
+        }
+
+        stage('Deploy to Prod') {
+            when {
+                branch 'prod'
+            }
+            steps {
+                echo "Deploying release build to Production..."
+                // Example: run Helm/K8s deployment or push to prod server
+                // sh "./scripts/deploy-prod.sh"
+            }
+        }
     }
 
     post {
         success {
             script {
                 if (env.CHANGE_ID) {
-                    githubNotify credentialsId: 'github-pat',
-                        context: 'jenkins/ci',
-                        status: 'SUCCESS',
-                        description: "Build passed",
-                        targetUrl: env.BUILD_URL
+                    githubNotify context: 'jenkins/ci', status: 'SUCCESS',
+                        description: "Build passed", targetUrl: env.BUILD_URL
                 }
             }
         }
         failure {
             script {
                 if (env.CHANGE_ID) {
-                    githubNotify credentialsId: 'github-pat',
-                        context: 'jenkins/ci',
-                        status: 'FAILURE',
-                        description: "Build failed",
-                        targetUrl: env.BUILD_URL
+                    githubNotify context: 'jenkins/ci', status: 'FAILURE',
+                        description: "Build failed", targetUrl: env.BUILD_URL
                 }
             }
         }
