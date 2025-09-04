@@ -26,6 +26,16 @@ spec:
     }
   }
 
+  options {
+    // Discard old builds per branch
+    buildDiscarder(logRotator(
+      daysToKeepStr: '1',   // keep builds for 14 days
+      numToKeepStr: '3',    // keep max 10 builds
+      artifactDaysToKeepStr: '0',  // keep artifacts for 7 days
+      artifactNumToKeepStr: '0'    // keep max 2 artifacts
+    ))
+  }
+
   environment {
     AWS_DEFAULT_REGION = "us-east-1"
   }
