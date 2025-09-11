@@ -47,7 +47,14 @@ stages:
     pool: 'self-hosted'
       
     steps:
-
+    - task: AzureRmWebAppDeployment@5
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'demo'
+        appType: 'webAppContainer'
+        WebAppName: 'petclinic'
+        DockerNamespace: 'npetclinic'
+        DockerRepository: 'noormuradispringpetclinic'
 
 
 
