@@ -54,5 +54,5 @@ stages:
           az containerapp update \
             -n petclinic \
             -g demo \
-            --image npetclinic.azurecr.io/noormuradispringpetclinic:$(tag) \
-            --registry-server npetclinic.azurecr.io
+            --image npetclinic.azurecr.io/noormuradispringpetclinic:$(tag)
+
