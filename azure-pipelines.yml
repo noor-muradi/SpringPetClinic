@@ -39,10 +39,10 @@ stages:
         tags: |
           $(tag)
 
-- stage: deploy
+- stage: Deploy
   displayName: Deploy to Container App
   jobs:
-  - job: deploy
+  - job: Deploy
     pool: 'self-hosted'
     steps:
     - task: AzureCLI@2
