@@ -40,7 +40,7 @@ stages:
           $(tag)
 
 - stage: deploy
-  displayName: Deploy to cotainer app
+  displayName: Deploy to container app
   jobs:
   - job: deploy
     displayName: deploy
@@ -50,11 +50,13 @@ stages:
     - task: AzureRmWebAppDeployment@5
       inputs:
         ConnectionType: 'AzureRM'
-        azureSubscription: 'demo'
+        azureSubscription: 'demo'   # Service connection to Azure
         appType: 'webAppContainer'
-        WebAppName: 'petclinic'
-        DockerNamespace: 'npetclinic'
+        WebAppName: 'petclinic'     # Must already exist in RG
+        DockerNamespace: 'npetclinic.azurecr.io'
         DockerRepository: 'noormuradispringpetclinic'
+        DockerImageTag: '$(tag)'
+
 
 
 
