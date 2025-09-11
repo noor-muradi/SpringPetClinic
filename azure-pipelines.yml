@@ -3,7 +3,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- main
+- none
 
 resources:
 - repo: self
@@ -38,3 +38,16 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+- stage: deploy
+  displayName: Deploy to cotainer app
+  jobs:
+  - job: deploy
+    displayName: deploy
+    pool: 'self-hosted'
+      
+    steps:
+
+
+
+
