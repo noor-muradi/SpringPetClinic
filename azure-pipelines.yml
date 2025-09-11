@@ -40,23 +40,19 @@ stages:
           $(tag)
 
 - stage: deploy
-  displayName: Deploy to container app
+  displayName: Deploy to Container App
   jobs:
   - job: deploy
-    displayName: deploy
     pool: 'self-hosted'
-      
     steps:
-    - task: AzureRmWebAppDeployment@5
+    - task: AzureCLI@2
       inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'demo'   # Service connection to Azure
-        appType: 'webAppContainer'
-        WebAppName: 'petclinic'     # Must already exist in RG
-        DockerNamespace: 'npetclinic.azurecr.io'
-        DockerRepository: 'noormuradispringpetclinic'
-        DockerImageTag: '$(tag)'
-
-
-
-
+        azureSubscription: 'demo'   # Your Azure service connection
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az containerapp update \
+            -n petclinic \
+            -g demo \
+            --image npetclinic.azurecr.io/noormuradispringpetclinic:$(tag) \
+            --registry-server npetclinic.azurecr.io
