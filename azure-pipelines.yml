@@ -36,8 +36,10 @@ stages:
         dockerfile: $(dockerfilePath)
         buildContext: $(Build.SourcesDirectory)
         containerRegistry: $(dockerRegistryServiceConnection)
+        arguments: --cache-from=$(containerRegistry)/$(imageRepository):latest
         tags: |
           $(tag)
+          latest
 
 - stage: Deploy
   displayName: Deploy to Container App
